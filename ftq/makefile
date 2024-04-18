@@ -39,7 +39,7 @@ ftq: ftq.h ftq.c
 
 # Fixed TIME quanta benchmark for use with mutiple threads
 t_ftq: ftq.h ftq.c
-	$(CC) $(CFLAGS) ftq.c -D_WITH_PTHREADS_ -DCORE63 -o t_ftq -lpthread
+	$(CC) $(CFLAGS) ftq.c -D_WITH_PTHREADS_ -DCORE63 -D_GNU_SOURCE -o t_ftq -lpthread
 
 # Fixed WORK quanta benchmark without threads
 fwq: ftq.h fwq.c

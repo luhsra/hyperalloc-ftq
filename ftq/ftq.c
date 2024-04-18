@@ -95,9 +95,9 @@ void *ftq_core(void *arg) {
 #ifdef _WITH_PTHREADS_
 
   /* affinity stuff */
-  unsigned long mask = 0x1;
-
-  mask = mask << thread_num;
+  cpu_set_t mask;
+  CPU_ZERO(&mask);
+  CPU_SET(thread_num, &mask);
   printf("thread number = %d with affinity mask = %d\n", thread_num, mask);
   if (pthread_setaffinity_np(pthread_self(), sizeof(mask), &mask) < 0) {
     perror("pthread_setaffinity_np");
@@ -194,7 +194,6 @@ int main(int argc, char **argv) {
 #ifdef _WITH_PTHREADS_
   int rc;
   pthread_t *threads;
-  unsigned long mask = 1;
 #endif
 
   /* default output name prefix */
@@ -303,6 +302,9 @@ int main(int argc, char **argv) {
 
   if (use_threads == 1) {
 #ifdef _WITH_PTHREADS_
+    cpu_set_t mask;
+    CPU_ZERO(&mask);
+    CPU_SET(0, &mask);
     if (sched_setaffinity(0, sizeof(mask), &mask) < 0) {
       perror("sched_setaffinity");
     }
