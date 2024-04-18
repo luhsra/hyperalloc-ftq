@@ -341,7 +341,29 @@ int main(int argc, char **argv) {
       fprintf(stdout, "%lld %lld\n", samples[i * 2], samples[i * 2 + 1]);
     }
   } else {
+#ifdef _WITH_PTHREADS_
+    fp = open("times.dat", O_CREAT | O_TRUNC | O_WRONLY, 0644);
+    if (fp < 0) {
+      perror("can not create file");
+      exit(EXIT_FAILURE);
+    }
+    for (i = 0; i < numsamples * 2 * numthreads; i += 2) {
+      sprintf(buf, "%lld\n", samples[i]);
+      write(fp, buf, strlen(buf));
+    }
+    close(fp);
 
+    fp = open("counts.dat", O_CREAT | O_TRUNC | O_WRONLY, 0644);
+    if (fp < 0) {
+      perror("can not create file");
+      exit(EXIT_FAILURE);
+    }
+    for (i = 1; i < numsamples * 2 * numthreads; i += 2) {
+      sprintf(buf, "%lld\n", samples[i]);
+      write(fp, buf, strlen(buf));
+    }
+    close(fp);
+#endif
     for (j = 0; j < numthreads; j++) {
       sprintf(fname_times, "%s_%d_times.dat", outname, j);
       sprintf(fname_counts, "%s_%d_counts.dat", outname, j);
